@@ -1,0 +1,6 @@
+{
+  "name": "SK Studio Portfolio",
+  "description": "Premium futuristic cinematic portfolio website for Sonu Kahar (SK Studio), highlighting advanced full stack, Android, and cognitive AI engineering.",
+  "requestFramePermissions": ["geolocation"],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

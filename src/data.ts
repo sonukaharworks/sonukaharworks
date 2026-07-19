@@ -48,8 +48,8 @@ export const SERVICES: Service[] = [
     metrics: 'LLM GROUNDING'
   },
   {
-    id: 'cyber-dashboards',
-    title: 'Cyber Security Dashboards',
+    id: 'cyber-consoles',
+    title: 'Cyber Security Consoles',
     description: 'Designing real-time threat detection consoles, activity monitors, live socket relays, and military-grade encryption systems.',
     iconName: 'Shield',
     metrics: 'AES-256 SYMMETRIC'
@@ -62,9 +62,9 @@ export const SERVICES: Service[] = [
     metrics: 'Enterprise SEO Ready'
   },
   {
-    id: 'admin-panels',
-    title: 'Admin Panels',
-    description: 'Full-stack responsive governance dashboards, fine-grained access control nodes, system analytics, and bulk data loaders.',
+    id: 'management-workspaces',
+    title: 'Management Workspaces',
+    description: 'Full-stack responsive governance workspaces, fine-grained access control nodes, system analytics, and bulk data loaders.',
     iconName: 'Layers',
     metrics: 'ROLE-BASED RBAC'
   },
@@ -142,7 +142,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'p3',
-    title: 'Cyber Security Dashboard',
+    title: 'Cyber Security Console',
     category: 'Security',
     image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800',
     description: 'Real-time server threat telemetry monitor visualizing live socket connections, scanning active node IPs, and generating dynamic risk indexes.',
@@ -185,7 +185,7 @@ export const PROJECTS: Project[] = [
     title: 'Restaurant Operations Core',
     category: 'Web',
     image: 'https://images.unsplash.com/photo-1552566626-52f8b828add9?auto=format&fit=crop&q=80&w=800',
-    description: 'Sleek, gorgeous live kitchen ordering dashboard integrating custom thermal print routing and interactive drag-and-drop table layouts.',
+    description: 'Sleek, gorgeous live kitchen ordering console integrating custom thermal print routing and interactive drag-and-drop table layouts.',
     tech: ['React', 'Tailwind CSS', 'Node.js', 'Socket.io', 'Express'],
     specs: ['3ms State Distribution', 'Thermal Print Gateway', 'Responsive KDS Layout'],
     status: 'ACTIVE'
@@ -212,7 +212,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'p10',
-    title: 'Quantum Finance Dashboard',
+    title: 'Quantum Finance Console',
     category: 'Security',
     image: 'https://images.unsplash.com/photo-1642543492481-44e81e3914a7?auto=format&fit=crop&q=80&w=800',
     description: 'Highly detailed high-frequency telemetry system rendering crypto trading indexes, transaction ledgers, and secure encryption verifications.',
@@ -232,7 +232,7 @@ export const PROJECTS: Project[] = [
   },
   {
     id: 'p12',
-    title: 'Governance Admin Panel',
+    title: 'Governance Owner Workspace',
     category: 'Security',
     image: 'https://images.unsplash.com/photo-1451187580459-43490279c0fa?auto=format&fit=crop&q=80&w=800',
     description: 'Secure configuration workspace containing advanced server access keys, user log analytics, database health checkers, and deployment toggles.',

@@ -1,151 +1,156 @@
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'motion/react';
-import { Eye, ArrowUpRight, Sparkles, X } from 'lucide-react';
-import { PROJECTS } from '../data';
+import React from 'react';
+import { motion } from 'motion/react';
+import { Sparkles, ArrowUpRight, Cpu } from 'lucide-react';
 
-export default function PortfolioView() {
-  const [activeCategory, setActiveCategory] = useState<'all' | 'Android' | 'Web' | 'Security' | 'UI/UX'>('all');
-  const [activeImage, setActiveImage] = useState<string | null>(null);
+interface ProjectItem {
+  id: string;
+  title: string;
+  category: 'Android App' | 'Website';
+  image: string;
+  description: string;
+  tech: string[];
+}
 
-  const filteredItems = activeCategory === 'all' 
-    ? PROJECTS 
-    : PROJECTS.filter(item => item.category === activeCategory);
+interface PortfolioViewProps {
+  theme: 'dark' | 'light';
+  onSelectProject: (id: string) => void;
+}
+
+export default function PortfolioView({ theme, onSelectProject }: PortfolioViewProps) {
+  const isDark = theme === 'dark';
+
+  const premiumProjects: ProjectItem[] = [
+    {
+      id: 'p1',
+      title: 'Secure Android Suite',
+      category: 'Android App',
+      image: 'https://images.unsplash.com/photo-1601972599720-36938d4ecd31?auto=format&fit=crop&q=80&w=800',
+      description: 'High-performance offline-first native Android app with biometric authentication, background sync adapters, and a military-grade encrypted local SQL storage layer.',
+      tech: ['Kotlin', 'Coroutines', 'Room DB', 'Jetpack Compose', 'Biometrics API']
+    },
+    {
+      id: 'p3',
+      title: 'Cyber Security Dashboard',
+      category: 'Website',
+      image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=800',
+      description: 'Real-time threat telemetry monitor visualizing active node IPs, socket payloads, dynamic threat level indicators, and encrypted transaction registries.',
+      tech: ['React', 'D3.js', 'WebSockets', 'Tailwind CSS', 'Express.js']
+    },
+    {
+      id: 'p2',
+      title: 'Neural Assistant AI',
+      category: 'Website',
+      image: 'https://images.unsplash.com/photo-1677442136019-21780efad99a?auto=format&fit=crop&q=80&w=800',
+      description: 'Futuristic AI neural workspace integrating smart context vector embeddings, dynamic semantic maps, and responsive layout flows.',
+      tech: ['React', 'TypeScript', 'Node.js', 'Vector DB', 'Framer Motion']
+    },
+    {
+      id: 'p13',
+      title: 'Secure Android Banking',
+      category: 'Android App',
+      image: 'https://images.unsplash.com/photo-1563013544-824ae1d704d3?auto=format&fit=crop&q=80&w=800',
+      description: 'High-security mobile banking companion layout implementing advanced secure SSL pinning, device anti-tamper modules, and root detection protocols.',
+      tech: ['Kotlin', 'Compose', 'Coroutines', 'Retrofit', 'SSL Pinning']
+    }
+  ];
 
   return (
-    <div className="space-y-36 pb-20 select-none text-left">
+    <div className="space-y-16 pb-20 select-none text-left">
       {/* Portfolio Header */}
       <section className="space-y-6 max-w-3xl relative">
-        <div className="absolute -top-12 -left-6 w-32 h-32 bg-cyber-pink/5 rounded-full blur-2xl pointer-events-none" />
-        <span className="font-display text-xs text-cyber-cyan font-extrabold tracking-[0.4em] uppercase block">// SECURITY EVIDENCE MATRIX</span>
-        <h1 className="font-display text-3xl sm:text-5xl font-black tracking-tight uppercase text-white">
-          VISUAL GALLERY
+        <div className={`absolute -top-12 -left-6 w-32 h-32 ${isDark ? 'bg-blue-500/5' : 'bg-blue-500/10'} rounded-full blur-2xl pointer-events-none`} />
+        <span className={`font-mono text-xs ${isDark ? 'text-blue-400' : 'text-blue-600'} font-extrabold tracking-[0.4em] uppercase block`}>
+          // DECRYPTED EVIDENCE ARCHIVE
+        </span>
+        <h1 className={`font-display text-3xl sm:text-5xl font-black tracking-tight uppercase ${isDark ? 'text-white' : 'text-slate-900'}`}>
+          PREMIUM PORTFOLIO
         </h1>
-        <div className="h-[2px] w-16 bg-gradient-to-r from-cyber-cyan to-cyber-pink mt-4 rounded-full" />
-        <p className="font-sans text-slate-400 text-sm sm:text-base leading-relaxed pt-2">
-          An interactive, decrypted repository showcasing modular visual layout components, mockups, and live operational captures.
+        <div className={`h-[2px] w-16 bg-gradient-to-r ${isDark ? 'from-blue-500 to-purple-500' : 'from-blue-600 to-indigo-600'} mt-4 rounded-full`} />
+        <p className={`font-sans ${isDark ? 'text-slate-400' : 'text-slate-650'} text-xs sm:text-sm leading-relaxed pt-2`}>
+          A curated collection of verified software products built with industry-grade reliability, secure network proxies, and pixel-perfect layouts. No placeholders or template reuse.
         </p>
       </section>
 
-      {/* Dynamic Filters & Grid */}
-      <section className="space-y-12">
-        <div className="flex justify-start sm:justify-center border-b border-cyber-cyan/10 pb-4 overflow-x-auto">
-          <div className="flex gap-4 font-mono text-[9px] font-black tracking-widest uppercase">
-            {[
-              { id: 'all', label: 'ALL DECRYPTS' },
-              { id: 'Web', label: 'WEB FRONTENDS' },
-              { id: 'Android', label: 'ANDROID CORES' },
-              { id: 'Security', label: 'SECURITY CORES' },
-              { id: 'UI/UX', label: 'UI/UX SCHEMAS' }
-            ].map((cat) => (
-              <button
-                key={cat.id}
-                onClick={() => setActiveCategory(cat.id as any)}
-                className={`pb-2.5 px-3 transition-all cursor-pointer relative ${
-                  activeCategory === cat.id 
-                    ? 'text-cyber-cyan font-extrabold' 
-                    : 'text-slate-500 hover:text-slate-350'
-                }`}
-              >
-                {cat.label}
-                {activeCategory === cat.id && (
-                  <motion.div 
-                    layoutId="portfolioActiveBorder"
-                    className="absolute bottom-0 left-0 right-0 h-[2.5px] bg-gradient-to-r from-cyber-cyan via-cyber-purple to-cyber-pink rounded-full shadow-[0_0_8px_#00f0ff]"
-                  />
-                )}
-              </button>
-            ))}
-          </div>
-        </div>
-
-        {/* Portfolio Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
-          <AnimatePresence mode="popLayout">
-            {filteredItems.map((item, index) => (
-              <motion.div
-                layout
-                key={item.id}
-                initial={{ opacity: 0, scale: 0.95 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.95 }}
-                transition={{ duration: 0.5 }}
-                className="group relative overflow-hidden rounded-xl bg-slate-950 border border-cyber-cyan/15 aspect-[1.1] cursor-pointer shadow-[0_0_15px_rgba(0,240,255,0.03)] hover:border-cyber-cyan/40"
-                onClick={() => setActiveImage(item.image)}
-              >
-                {/* Background Image */}
-                <img 
-                  src={item.image} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover opacity-70 group-hover:opacity-85 transition-transform duration-750 group-hover:scale-103"
-                  referrerPolicy="no-referrer"
-                />
-
-                {/* Laser scan effect on card hover */}
-                <div className="absolute inset-x-0 top-0 h-[2px] bg-cyber-cyan opacity-0 group-hover:opacity-100 group-hover:animate-bounce pointer-events-none" />
-
-                {/* Cyber Hover Panel */}
-                <div className="absolute inset-0 bg-slate-950/80 backdrop-blur-[2px] opacity-0 group-hover:opacity-100 transition-opacity duration-350 flex flex-col justify-between p-6">
-                  {/* Top category label */}
-                  <div className="flex justify-between items-center">
-                    <span className="font-mono text-[8px] font-black tracking-widest text-cyber-cyan bg-slate-950 px-2.5 py-1 rounded uppercase border border-cyber-cyan/20">
-                      {item.category}
-                    </span>
-                    <Sparkles size={14} className="text-cyber-cyan animate-pulse" />
-                  </div>
-
-                  {/* Bottom Text */}
-                  <div className="space-y-2 text-left">
-                    <h3 className="font-display text-base font-black text-white uppercase tracking-wide">
-                      {item.title}
-                    </h3>
-                    <p className="font-sans text-[11px] text-slate-300 leading-relaxed line-clamp-2">
-                      {item.description}
-                    </p>
-                    <div className="flex items-center gap-1.5 font-mono text-[8px] font-black tracking-widest text-cyber-cyan uppercase pt-2">
-                      <span>OPEN SPECIFICATE WINDOW</span>
-                      <ArrowUpRight size={10} />
-                    </div>
-                  </div>
-                </div>
-              </motion.div>
-            ))}
-          </AnimatePresence>
-        </div>
-      </section>
-
-      {/* Lightbox Modal */}
-      <AnimatePresence>
-        {activeImage && (
+      {/* Glass Project Cards Grid */}
+      <section className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-4">
+        {premiumProjects.map((proj, idx) => (
           <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 bg-slate-950/90 backdrop-blur-md z-50 flex items-center justify-center p-4"
-            onClick={() => setActiveImage(null)}
+            key={proj.id}
+            initial={{ opacity: 0, y: 15 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: idx * 0.1 }}
+            className={`relative rounded-3xl border overflow-hidden transition-all duration-300 group flex flex-col justify-between ${
+              isDark 
+                ? 'bg-white/[0.01] border-white/[0.06] hover:border-blue-500/30 hover:bg-white/[0.02] shadow-[0_12px_40px_rgba(0,0,0,0.5)]'
+                : 'bg-white border-slate-200 hover:border-blue-500/40 hover:shadow-[0_12px_30px_rgba(0,0,0,0.06)] shadow-sm'
+            }`}
           >
-            <motion.div
-              initial={{ scale: 0.97 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.97 }}
-              className="relative max-w-4xl max-h-[85vh] w-full rounded-xl overflow-hidden border border-cyber-cyan/35 bg-slate-950"
-              onClick={(e) => e.stopPropagation()}
-            >
-              <button
-                onClick={() => setActiveImage(null)}
-                className="absolute top-4 right-4 z-50 p-2 bg-slate-950/90 rounded-full text-slate-400 border border-cyber-cyan/35 hover:text-white transition-all cursor-pointer"
-              >
-                <X size={15} />
-              </button>
-              <img 
-                src={activeImage} 
-                alt="Fullscreen View" 
-                className="w-full h-auto max-h-[85vh] object-contain mx-auto"
+            {/* Project Image Container */}
+            <div className="relative aspect-[16/10] overflow-hidden">
+              <img
+                src={proj.image}
+                alt={proj.title}
+                className="w-full h-full object-cover opacity-85 group-hover:opacity-100 group-hover:scale-[1.03] transition-all duration-700"
                 referrerPolicy="no-referrer"
               />
-            </motion.div>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
+              
+              {/* Category tag */}
+              <div className="absolute top-4 left-4 bg-slate-950/80 backdrop-blur-md border border-white/10 px-3.5 py-1 rounded-full">
+                <span className="font-mono text-[8px] font-black tracking-widest uppercase text-blue-400">
+                  {proj.category}
+                </span>
+              </div>
+            </div>
+
+            {/* Project Copy */}
+            <div className="p-6 sm:p-8 space-y-5 flex-grow flex flex-col justify-between">
+              <div className="space-y-3">
+                <h3 className={`font-display text-base sm:text-lg font-black uppercase tracking-wide group-hover:text-blue-400 transition-colors ${
+                  isDark ? 'text-white' : 'text-slate-900'
+                }`}>
+                  {proj.title}
+                </h3>
+                <p className={`font-sans text-[11.5px] leading-relaxed ${isDark ? 'text-slate-350' : 'text-slate-650'}`}>
+                  {proj.description}
+                </p>
+              </div>
+
+              {/* Technologies List */}
+              <div className="space-y-4 pt-3 border-t border-slate-100 dark:border-white/[0.04] mt-auto">
+                <div className="flex flex-wrap gap-1.5">
+                  {proj.tech.map((t) => (
+                    <span
+                      key={t}
+                      className={`font-mono text-[8.5px] font-bold px-2.5 py-1 rounded-md border ${
+                        isDark 
+                          ? 'bg-slate-950 border-white/5 text-slate-400' 
+                          : 'bg-slate-50 border-slate-150 text-slate-600'
+                      }`}
+                    >
+                      {t}
+                    </span>
+                  ))}
+                </div>
+
+                {/* View Details CTA */}
+                <button
+                  onClick={() => onSelectProject(proj.id)}
+                  className={`w-full py-2.5 rounded-xl font-mono text-[9px] font-black tracking-widest uppercase transition-all duration-300 flex items-center justify-center gap-1.5 cursor-pointer ${
+                    isDark 
+                      ? 'bg-white/[0.02] border border-white/[0.08] hover:border-blue-500/30 text-slate-300 hover:text-white' 
+                      : 'bg-slate-100 border border-slate-200/60 hover:border-blue-500/40 text-slate-700 hover:text-slate-900 shadow-sm'
+                  }`}
+                >
+                  VIEW SPECIFICATION DETAILS
+                  <ArrowUpRight size={12} />
+                </button>
+              </div>
+            </div>
           </motion.div>
-        )}
-      </AnimatePresence>
+        ))}
+      </section>
     </div>
   );
 }

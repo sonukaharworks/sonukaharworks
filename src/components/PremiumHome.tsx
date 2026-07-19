@@ -15,6 +15,9 @@ import PortfolioView from './PortfolioView';
 import ExperienceView from './ExperienceView';
 import ContactView from './ContactView';
 
+import AdminPanel from './AdminPanel';
+import { visitorLogService } from '../services/visitorLog';
+
 interface PremiumHomeProps {
   onReplayIntro: () => void;
 }
@@ -23,6 +26,10 @@ export default function PremiumHome({ onReplayIntro }: PremiumHomeProps) {
   const [activeView, setActiveView] = useState<'home' | 'about' | 'services' | 'skills' | 'projects' | 'portfolio' | 'experience' | 'contact'>('home');
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [clockTime, setClockTime] = useState('');
+  
+  // Custom states for hidden Admin Panel
+  const [sonuTapCount, setSonuTapCount] = useState(0);
+  const [isAdminOpen, setIsAdminOpen] = useState(false);
 
   // Synchronize dynamic UTC ticking clock for premium telemetry feel
   useEffect(() => {
@@ -40,6 +47,24 @@ export default function PremiumHome({ onReplayIntro }: PremiumHomeProps) {
     window.scrollTo({ top: 0, behavior: 'smooth' });
     setMobileMenuOpen(false);
   }, [activeView]);
+
+  // Log page visits in realtime if user has granted explicit permission
+  useEffect(() => {
+    if (visitorLogService.getConsentState() === 'granted') {
+      visitorLogService.logVisit(activeView, null);
+    }
+  }, [activeView]);
+
+  const handleSonuTap = () => {
+    setSonuTapCount(prev => {
+      const next = prev + 1;
+      if (next >= 5) {
+        setIsAdminOpen(true);
+        return 0;
+      }
+      return next;
+    });
+  };
 
   const navigationItems = [
     { id: 'home', label: 'Main', icon: <Home size={13} /> },
@@ -70,7 +95,10 @@ export default function PremiumHome({ onReplayIntro }: PremiumHomeProps) {
           
           {/* Logo / Brand signature */}
           <button
-            onClick={() => setActiveView('home')}
+            onClick={() => {
+              setActiveView('home');
+              handleSonuTap();
+            }}
             className="flex items-center gap-3.5 group cursor-pointer focus:outline-none"
           >
             <div className="relative">
@@ -175,7 +203,7 @@ export default function PremiumHome({ onReplayIntro }: PremiumHomeProps) {
             transition={{ duration: 0.4, ease: 'easeOut' }}
             className="w-full h-full"
           >
-            {activeView === 'home' && <HomeView onNavigate={(view) => setActiveView(view)} />}
+            {activeView === 'home' && <HomeView onNavigate={(view) => setActiveView(view)} onSonuTap={handleSonuTap} />}
             {activeView === 'about' && <AboutView />}
             {activeView === 'services' && <ServicesView />}
             {activeView === 'skills' && <SkillsView />}
@@ -228,6 +256,13 @@ export default function PremiumHome({ onReplayIntro }: PremiumHomeProps) {
 
         </div>
       </footer>
+
+      {/* Realtime Cyber Admin Dashboard Full Screen Overlay */}
+      <AnimatePresence>
+        {isAdminOpen && (
+          <AdminPanel onClose={() => setIsAdminOpen(false)} />
+        )}
+      </AnimatePresence>
     </div>
   );
 }

@@ -511,9 +511,10 @@ function RadarSweep() {
 // ==========================================
 interface HomeViewProps {
   onNavigate: (view: 'about' | 'services' | 'skills' | 'projects' | 'portfolio' | 'experience' | 'hire' | 'contact') => void;
+  onSonuTap?: () => void;
 }
 
-export default function HomeView({ onNavigate }: HomeViewProps) {
+export default function HomeView({ onNavigate, onSonuTap }: HomeViewProps) {
   const [isGlitched, setIsGlitched] = useState(false);
   const [logs, setLogs] = useState<string[]>([
     '[SK_SEC]: Ports audited, core secure.',
@@ -562,6 +563,10 @@ export default function HomeView({ onNavigate }: HomeViewProps) {
     if (isGlitched) return;
     setIsGlitched(true);
     playCyberSound();
+    
+    if (onSonuTap) {
+      onSonuTap();
+    }
     
     setTimeout(() => {
       setIsGlitched(false);

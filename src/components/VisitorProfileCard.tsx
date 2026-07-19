@@ -1,5 +1,6 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
+import { visitorLogService } from '../services/visitorLog';
 import { 
   Shield, 
   MapPin, 
@@ -253,8 +254,24 @@ export default function VisitorProfileCard({ latitude, longitude, isGuestMode, i
     playProfileFX('tick', isSoundOn);
   };
 
-  const handleEnterHome = (e: React.MouseEvent<HTMLButtonElement>) => {
+  const handleEnterHomeWithConsent = async (granted: boolean, e: React.MouseEvent<HTMLButtonElement>) => {
     if (isExiting) return;
+    
+    // Set consent state
+    visitorLogService.setConsentState(granted ? 'granted' : 'denied');
+    
+    // If granted, write to Firebase (or localStorage fallback)
+    if (granted) {
+      const loc = {
+        lat: latitude,
+        lng: longitude,
+        city: geoData.city,
+        state: geoData.state,
+        country: geoData.country
+      };
+      await visitorLogService.logVisit('home', loc);
+    }
+    
     setIsExiting(true);
     
     // Ripple click coordinates
@@ -422,60 +439,42 @@ export default function VisitorProfileCard({ latitude, longitude, isGuestMode, i
             )}
           </div>
 
-          {/* Premium "ENTER HOME" button */}
+          {/* Explicit Firebase Consent and Entry Choices */}
           <AnimatePresence>
             {allFieldsLoaded && (
               <motion.div
-                initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                animate={{ opacity: 1, y: 0, scale: 1 }}
-                transition={{ type: 'spring', stiffness: 300, damping: 25, delay: 0.2 }}
-                className="w-full relative transition-transform duration-300"
-                style={{
-                  transform: `translate3d(${magneticPos.x}px, ${magneticPos.y}px, 0)`,
-                }}
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="w-full space-y-4 pt-2 border-t border-white/5"
               >
-                {/* Neon backlighting blur */}
-                <div className="absolute -inset-1 rounded-xl bg-gradient-to-r from-cyber-cyan via-cyber-purple to-cyber-pink blur-md opacity-25" />
+                <div className="bg-slate-950/80 border border-cyber-cyan/20 rounded-xl p-3 text-center space-y-2">
+                  <span className="text-[8.5px] font-mono tracking-widest text-cyber-cyan uppercase font-bold flex items-center justify-center gap-1.5 animate-pulse">
+                    <Lock size={10} className="text-cyber-cyan" /> Secure Cloud Synchronization
+                  </span>
+                  <p className="text-[8px] font-mono text-slate-450 uppercase leading-relaxed tracking-wider">
+                    Would you like to sync your visitor specs (OS, Browser, Location if allowed) to Sonu's encrypted live Cloud Dashboard? No IP addresses are collected.
+                  </p>
+                </div>
 
-                <div
-                  style={{
-                    transform: `perspective(1000px) rotateX(${-btnCoords.y * 10}deg) rotateY(${btnCoords.x * 10}deg)`,
-                    transformStyle: 'preserve-3d',
-                  }}
-                  className="transition-transform duration-200 ease-out w-full"
-                >
+                <div className="flex flex-col sm:flex-row gap-2.5 w-full">
+                  {/* Option 1: Grant & Enter */}
+                  <div className="flex-1 relative">
+                    <div className="absolute -inset-0.5 rounded-lg bg-gradient-to-r from-cyber-cyan to-cyber-purple blur-sm opacity-35" />
+                    <button
+                      onClick={(e) => handleEnterHomeWithConsent(true, e)}
+                      className="w-full relative py-2.5 px-3 rounded-lg text-[8px] font-black tracking-wider uppercase cursor-pointer bg-slate-950 border border-cyber-cyan text-cyber-cyan hover:bg-cyber-cyan/10 transition-all duration-300 flex items-center justify-center gap-1.5"
+                    >
+                      <CheckCircle2 size={10} className="text-cyber-cyan animate-bounce" />
+                      Grant Sync & Enter
+                    </button>
+                  </div>
+
+                  {/* Option 2: Local Only & Enter */}
                   <button
-                    ref={buttonRef}
-                    onMouseMove={handleButtonMouseMove}
-                    onMouseLeave={handleButtonMouseLeave}
-                    onMouseEnter={handleButtonMouseEnter}
-                    onClick={handleEnterHome}
-                    className="w-full relative py-3.5 rounded-xl text-[9px] font-black tracking-[0.4em] uppercase cursor-pointer select-none overflow-hidden text-white font-display border border-cyber-cyan/40 bg-slate-950 hover:border-cyber-cyan hover:shadow-[0_0_20px_rgba(0,240,255,0.25)] transition-all duration-300"
+                    onClick={(e) => handleEnterHomeWithConsent(false, e)}
+                    className="flex-1 py-2.5 px-3 rounded-lg text-[8px] font-black tracking-wider uppercase cursor-pointer bg-slate-950/50 border border-slate-700 text-slate-400 hover:text-white hover:border-slate-500 hover:bg-slate-900 transition-all duration-300 flex items-center justify-center gap-1.5"
                   >
-                    {/* Sliding laser reflection */}
-                    <div className="absolute inset-0 overflow-hidden pointer-events-none">
-                      <motion.div
-                        animate={{ x: ['-100%', '100%'] }}
-                        transition={{ repeat: Infinity, duration: 2.5, ease: 'linear' }}
-                        className="w-1/3 h-full bg-gradient-to-r from-transparent via-white/10 to-transparent skew-x-12"
-                      />
-                    </div>
-
-                    {/* Ripples */}
-                    {ripples.map((ripple) => (
-                      <motion.span
-                        key={ripple.id}
-                        initial={{ scale: 0, opacity: 0.7 }}
-                        animate={{ scale: 6, opacity: 0 }}
-                        transition={{ duration: 0.8, ease: 'easeOut' }}
-                        style={{ left: ripple.x, top: ripple.y }}
-                        className="absolute w-6 h-6 -translate-x-1/2 -translate-y-1/2 rounded-full bg-cyber-pink pointer-events-none"
-                      />
-                    ))}
-
-                    <span className="relative z-10 flex items-center justify-center gap-2">
-                      ENTER HOME <ChevronRight size={11} className="text-cyber-cyan animate-pulse" />
-                    </span>
+                    Local Only & Enter
                   </button>
                 </div>
               </motion.div>
